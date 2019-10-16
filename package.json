@@ -1,0 +1,22 @@
+{
+  "name": "frizzylove_api",
+  "version": "1.0.0",
+  "description": "Api de l'application frizzylove",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "author": "Rachel Choisis",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "dotenv": "^7.0.0",
+    "express": "^4.16.4",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.5.5",
+    "nodemon": "^1.19.0",
+    "path": "^0.12.7"
+  }
+}
