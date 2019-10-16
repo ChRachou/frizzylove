@@ -1,6 +1,6 @@
 
 # PROJET DE FIN D'ETUDE PERSONNEL
-Application web sur React Native sur le thème du cheveux crépus.
+Application mobile sur React Native sur le thème du cheveux crépus.
 
 Présentation PDF du projet: [FrizzyLove](https://rachelchoisis.files.wordpress.com/2019/09/frizzylove-rachel-choisis.pdf)
 
