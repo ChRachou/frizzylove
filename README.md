@@ -8,7 +8,7 @@ Présentation PDF du projet: [FrizzyLove](https://rachelchoisis.files.wordpress.
 ## Partie Front-End:
 Projet exposé sur Snack Expo: [FrizzyLove Front](https://snack.expo.io/@chrachou/frizzy)
 
-## Partir BACK-END:
+## Partir Back-End:
 
 Lancement du projet:
 
