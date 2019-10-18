@@ -8,8 +8,7 @@ const jwt = require('jsonwebtoken')
 const UtilisateurSchema =  new Schema ({
     pseudo: String, 
     psw: String,
-    email: String,
-    date_naissance: Date,
+    email: String, 
     date_creation: Date,
     routines: [{
       nom: String,
@@ -19,6 +18,7 @@ const UtilisateurSchema =  new Schema ({
       }],
       }],
     challenges: [{
+        id_challenge: String,
         nom: String,
         date_debut: Date,
         date_fin: Date,
@@ -31,13 +31,19 @@ const UtilisateurSchema =  new Schema ({
 //FONCTIONS
  UtilisateurSchema.methods.generateJwt =  function generateJwt() {
   
+  // set expiration
+  const expiry = new Date();
+  expiry.setDate(expiry.getDate() + 59);
+
     //Jwt creation 
     return jwt.sign({
         _id: this._id,
         pseudo: this.pseudo,
         psw:  this.psw,
-        email:  this.email, 
-        date_creation: new Date()
+        email:  this.email,  
+        date_creation: new Date(),
+        expireIn: '10s',
+        exp: parseInt(expiry.getTime() / 100, 10)
     }, process.env.JWT_SECRET)
 }  
 

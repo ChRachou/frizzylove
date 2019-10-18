@@ -2,7 +2,7 @@
 const express = require('express'); 
 const bodyParser = require('body-parser');
 require('dotenv').config();
-
+const Grid = require("gridfs-stream")
 const port = process.env.PORT;
 const local = process.env.LOCAL;
 const server = express();
@@ -33,12 +33,14 @@ class ServerClass {
     lancement() {
 
         //Appel de mongodb
+         
         db.init() 
         .then( mongooseResponse => { 
-            // Launch server
+            // Lancer le serveur
             server.listen(port, () => console.log({ database: mongooseResponse, server: `http://${local}:${port}` }))
         })
         .catch( mongooseError => console.log(mongooseError));
+       
     }
 
 }

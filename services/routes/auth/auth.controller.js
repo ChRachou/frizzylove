@@ -1,6 +1,6 @@
 //IMPORTS ET CONGIFS
 const UtilisateurModel = require('../../../components/models/utilisateurs.models');
-const bscrpt = require('bcryptjs');
+const bcrypt = require('bcryptjs');
 
 //FONCTIONS
 
@@ -10,21 +10,9 @@ const readusers = ( ) => {
 
         UtilisateurModel.find((error, textures) => { 
             if(error) reject(error) // Mongo Error 
-            else {
-                //Manipule les données
-                /* let usersarray = [];
-                console.log(textures)
-                console.log("ok je suis dans les utilisateurs ") */
-
-               // ((async function loop() {
-                    // for (let i = 0; i < textures.length; ++i) { 
-                    //     usersarray.push({ nom: textures[i].nom})
-                    // }
-                    // // return all textures
-                    // console.log("usersarray", usersarray)
-                     return resolve(textures);
-                //})());
- 
+            else { 
+                return resolve(textures);
+                
             }  
         });
 
@@ -34,25 +22,82 @@ const readusers = ( ) => {
 
 //Créer un utilisateur
 const createuser = (body, res) => {
-    return new Promise( (resolve, reject) => {
-       
-        // Définition de l'objet à enregistrer
-       /*  const texture = {
-            nom: "testcontrole"
-        } */
-
-        console.log("body", body);
-        return reject(error) // Mongo Error 
-        // create new user
-        //TextureModel.create(texture)
-         //.then( mongoResponse => resolve(mongoResponse) )
-        // .catch( mongoResponse => reject(mongoResponse) )
+    return new Promise( (resolve, reject) => { 
+        //Crée ma date de création
+        body.date_creation = new Date(); 
+        console.log('body',body)
+        console.log(" body.pseudo", body.pseudo)
+        //Script le psw et email
+        bcrypt.hash( body.psw, 10 )
+        .then( hashedPassword => {   
+            body.psw = hashedPassword; 
+             
+            //créer mon user
+            UtilisateurModel.create(body)
+            .then( mongoResponse => resolve(mongoResponse) )
+            .catch( mongoResponse => reject(mongoResponse) )
+            
+        })
+        .catch( hashError => reject(hashError) ); 
+ 
+      
     });
 };
 
+
+//Connexion utilisateur
+const loginuser = (body, res) => { 
+    return new Promise( (resolve, reject) => {
+        console.log("body2", body)
+        UtilisateurModel.findOne( {email: body.email}, (error, user) =>{ 
+            console.log("user", user)
+            if(error) reject(error)
+            else if(!user) reject('User inconnu')
+            else{ 
+
+                if (typeof body.psw === 'number') 
+                {
+                    body.psw  = body.psw.toString();
+                    console.log(typeof body.psw)
+                }
+                // Check du mot de passe en le decryptant
+                const validpsw = bcrypt.compareSync(body.psw, user.psw); 
+                
+                if( !validpsw ) reject('Mot de passe invalide')
+                else {
+
+                    //J'envoie mon cookie qui continent mon token  
+                    res.cookie("FrizzyBDtoken", user.generateJwt(), { httpOnly: true });
+                    //j'envoie un cookie simple avec uniquement le pseudo
+                     // set expiration
+                    const expiry = new Date();
+                    expiry.setDate(expiry.getDate() + 59);
+                    res.cookie("Frizzypseudo", user.pseudo,{ exp: parseInt(expiry.getTime() / 100, 10)}, { httpOnly: true })
+
+                    // Envoie de l'user
+                    resolve(user)
+                }
+            }
+        } )  
+    })
+}
+
+const profiluser= (user, res) => {
+    return new Promise( (resolve, reject) => { 
+          
+            //créer mon user
+            UtilisateurModel.findOne({_id : user._id}, (error, user) => {
+                if (error) reject(error)
+                else resolve(user)
+            })  
+          
+    });
+}
 //EXPORTS
 
 module.exports = {
     readusers, 
-    createuser  
+    createuser,
+    loginuser,
+    profiluser
 }
